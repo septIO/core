@@ -44,6 +44,7 @@ export class ModelProperty extends Property {
             throw new ModelPropertyException(`Something is wrong with the property ${string}`)
 
         const prop = new this(name)
+        prop.guessParameters()
 
         if (!array[1])
             return prop
