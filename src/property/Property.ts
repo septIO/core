@@ -12,4 +12,10 @@ export abstract class Property {
         this.value = value
         this.options = options
     }
+
+    extractNameAndAttributes(str: string): {[name:string]: string|string[]}{
+        let name: string = "test"
+        let attributes: string[] = ["test"]
+        return {name, attributes}
+    }
 }

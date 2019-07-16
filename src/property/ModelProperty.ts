@@ -39,29 +39,28 @@ export class ModelProperty implements PropertyPrototype {
 
         // These should be set to true if they're present
         let trueIfSet = ["index", "primary", "nullable"]
-        const overwrites: ModelProperty = new ModelProperty();
 
         propArguments.forEach(argument => {
-            const args = argument.match(/([\w]+)\W*(\w+)?/)!
+            const args = argument.match(/(\w+)/)!
+            const attributes = argument.match(/\w+(.*)?/)![0]
+
             if (!args && args[1])
                 return;
             let attribute = <string>args[1]
-            console.log(args[2])
+            console.log(attributes)
+            if (!attributes)
+                return;
 
             /**
              * Automatically sets "true if present" on attributes
              */
             if (trueIfSet.includes(attribute)) {
-                if(Utilities.isAmbiguous(args[2]||"", '(true|false)'))
-                    throw AmbiguityException
+                if (Utilities.isAmbiguous(attributes || "", '(true|false)'))
+                    throw new AmbiguityException(attributes)
                 //@ts-ignore
-                overwrites[attribute] = args[2] || true
+                prop[attribute] = attributes.indexOf('false') === -1
             }
         })
-
-        console.log("isAmbiguous: ", Utilities.isAmbiguous("5 55", /(\d+)/g))
-        console.log(overwrites)
-        console.log(propArguments)
 
         return prop
     }

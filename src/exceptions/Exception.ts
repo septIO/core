@@ -1,7 +1,7 @@
 export abstract class Exception extends Error{
-    protected constructor(msg?: string){
-        if(!msg)
-            msg = "An error happened"
-        super(msg)
+    protected constructor(message?: string){
+        if(!message)
+            message = "An error happened"
+        super(message)
     }
 }

@@ -1,5 +1,3 @@
-import {Prop} from "vue/types/options";
-
 export function applyPrototype(obj1: Object, obj2: PropertyPrototype): Object {
     return {...obj2, ...obj1}
 }

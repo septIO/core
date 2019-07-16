@@ -1,4 +1,5 @@
 import {ModelProperty} from "../../src/property/ModelProperty";
+import {AmbiguityException} from "../../src/exceptions/AmbiguityException";
 
 describe("Property", () => {
     /*
@@ -21,6 +22,8 @@ describe("Property", () => {
         })
     })*/
     test("tester", () => {
-        ModelProperty.deserialize("model string 50, index : true : false : etc, unique, nullable")
+        expect(() => ModelProperty.deserialize("model index true false")).toThrow(AmbiguityException)
+        expect(ModelProperty.deserialize("model index").index).toBe(true)
+        expect(ModelProperty.deserialize("model index false").index).toBe(false)
     })
 })
