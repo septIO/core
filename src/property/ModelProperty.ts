@@ -1,6 +1,5 @@
 import {Property} from "./Property";
 import {Utilities} from "../utilities/Utilities";
-import {__GITHUB_DUMP__} from '../github-dump'
 import {PropertyPrototype} from "./PropertyProto";
 import {AmbiguityException} from "../exceptions/AmbiguityException";
 
@@ -34,11 +33,18 @@ export class ModelProperty implements PropertyPrototype {
 
         const prop: ModelProperty = new ModelProperty()
         prop.name = name
+        prop.datatype = this.guessDataType(prop.name)
 
         let propArguments = Utilities.splitAndClean(array.slice(1).join(" "), ',')
 
         // These should be set to true if they're present
         let trueIfSet = ["index", "primary", "nullable"]
+
+        const propNames = propArguments.map(prop => prop.match(/(\w+)/)![0])
+        if (propNames.length !== new Set(propNames).size)
+            throw new AmbiguityException(string + " has ambiguous property attributes")
+
+        let reserved = ["index", "primary", "unique", "nullable", "foreign", "key", "default"]
 
         propArguments.forEach(argument => {
             const args = argument.match(/(\w+)/)!
@@ -47,7 +53,7 @@ export class ModelProperty implements PropertyPrototype {
             if (!args && args[1])
                 return;
             let attribute = <string>args[1]
-            console.log(attributes)
+            //console.log(attributes)
             if (!attributes)
                 return;
 
@@ -65,19 +71,19 @@ export class ModelProperty implements PropertyPrototype {
         return prop
     }
 
-    static guessDataType() {
+    static guessDataType(str: string) {
         let datatype: string = "";
         for (const [regex, type] of this.typePatterns.entries()) {
-            if (regex.test(<string>this.name))
+            if (regex.test(str))
                 datatype = type
         }
 
         if (!datatype.length) {
             // Check through git dump, or assume string
-            datatype = __GITHUB_DUMP__[<string>this.name] || "string"
+            //datatype = __GITHUB_DUMP__[str] || "string"
         }
         // set to our own aliases
-        datatype = this.aliases[datatype]
+        datatype = this.aliases[datatype] || "string"
 
         // Datatype wasn't found, maybe the user wrote something else
         /*if (!datatype) {

@@ -1,29 +1,39 @@
 import {ModelProperty} from "../../src/property/ModelProperty";
 import {AmbiguityException} from "../../src/exceptions/AmbiguityException";
+import {Model} from "../../src/model/Model";
+
+function t(str: string, expected: string, not?: boolean) {
+    if (not)
+        return expect(ModelProperty.deserialize(str).datatype).not.toBe(expected)
+    return expect(ModelProperty.deserialize(str).datatype).toBe(expected)
+}
 
 describe("Property", () => {
-    /*
+
     describe("ModelProperty", () => {
-        describe("ModelProperty parameter predictor", () => {
-            it("Can predict 'created_at' to be of type 'timestamp'", () => {
-                expect(new ModelProperty('created_at').guessParameters()).toBe("timestamp")
+        describe("ModelProperty parameter datatype predictor", () => {
+            it("Can predict 'timestamp'", () => {
+                t("created_at", "timestamp")
+                t("last_seen_at", "timestamp")
             })
-            it("Can predict 't' to be of type 'string'", () => {
-                expect(new ModelProperty('t').guessParameters()).toBe("string")
+
+            it("can predict 'string'", () => {
+                t("name", "string")
+                t("address", "string")
+                t("ip_address", "string")
+                t("title", "string")
             })
-            it("Can predict 'user_id' to be of type 'uint32'", () => {
-                expect(new ModelProperty('user_id').guessParameters()).toBe("uint32")
+
+            it("can predict 'int32'", () => {
+                t("owner_id", "uint32")
             })
         })
-        describe("ModelProperty forced parameters", () => {
-            it("Does not change 'created_at' to a timestamp", () => {
-                expect(new ModelProperty('created_at', 'string'))
-            })
-        })
-    })*/
+
+    })
     test("tester", () => {
-        expect(() => ModelProperty.deserialize("model index true false")).toThrow(AmbiguityException)
-        expect(ModelProperty.deserialize("model index").index).toBe(true)
-        expect(ModelProperty.deserialize("model index false").index).toBe(false)
+        ModelProperty.deserialize("model index, nullable, unique")
+        //expect(() => ModelProperty.deserialize("model index true false")).toThrow(AmbiguityException)
+        //expect(ModelProperty.deserialize("model index").index).toBe(true)
+        //expect(ModelProperty.deserialize("model index false").index).toBe(false)
     })
 })
