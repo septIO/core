@@ -14,8 +14,12 @@ export class Segment {
     public title!: string;
     public raw!: string;
 
-    public model?: Model;
-    public table?: Table;
+    get data(): Readonly<Model | Table>[] {
+        return [this.model, this.table]
+    }
+
+    public model!: Model;
+    public table!: Table;
 
     constructor() {
     }
@@ -30,8 +34,8 @@ export class Segment {
         segment.title = lines[0]
         segment.lines = lines
         segment.type = segment.resolveEntityType()
-        segment.model = segment.createModel()
-        segment.table = segment.createTable()
+        segment.model = segment.createModel()!
+        segment.table = segment.createTable()!
 
         return segment
     }
@@ -61,5 +65,9 @@ export class Segment {
 
     public isTable(): boolean {
         return this.type instanceof Table
+    }
+
+    public isOfType<T extends Entity>(TCtor: new (...args: any[]) => T): boolean {
+        return this.type instanceof TCtor
     }
 }

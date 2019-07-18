@@ -39,7 +39,8 @@
   },
   "scripts": {
     "test": "jest",
-    "coverage": "jest --collectCoverage=true --coverageReporters=text-lcov | coveralls"
+    "coverage": "jest --collectCoverage=true --coverageReporters=text-lcov | coveralls",
+    "test-watch": "jest --watch"
   },
   "jest": {
     "moduleFileExtensions": [

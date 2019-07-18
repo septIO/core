@@ -15,7 +15,10 @@ export class Schema {
     public raw!: string;
     public cleaned!: string;
     public segments!: Segment[];
-    public entities!: Entity[];
+
+    entities(): Readonly<Entity[]> {
+        return this.getAllEntities()
+    }
 
     constructor() {
         //
@@ -30,16 +33,19 @@ export class Schema {
     }
 
     serialize(): string {
-        return "";
+        return this.cleaned;
     }
 
     public getModels(): Model[] {
-        return this.segments.filter(segment => segment.isModel()).map<Model>(segment => <Model>segment.model)
+        return this.getAllOfType<Model>(Model).map<Model>(segment => <Model>segment.model)
     }
 
     public getTables(): Table[] {
+        return this.getAllOfType<Table>(Table).map<Table>(segment => <Table>segment.table)
+    }
 
-        return this.segments.filter(segment => segment.isTable()).map<Table>(segment => <Table>segment.table)
+    public getAllOfType<T>(TCtor: new (...args: any[]) => T): Segment[] {
+        return this.segments.filter(segment => segment.isOfType(TCtor))
     }
 
     public getPivotTables(): ManyToManyTable[] {
@@ -51,6 +57,7 @@ export class Schema {
     }
 
     public getAllEntities(): Entity[] {
-        return this.getModels().map(model => <Entity>model).concat(this.getTables().map(table => <Entity>table))
+        return [...this.getModels(), ...this.getTables()]
+        //return this.getModels().map(model => <Entity>model).concat(this.getTables().map(table => <Entity>table))
     }
 }

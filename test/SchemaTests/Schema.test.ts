@@ -3,6 +3,9 @@ import {Segment} from "../../src/segment/Segment";
 import {Model} from "../../src/model/Model";
 import {Table} from "../../src/table/Table";
 import {Fileloader} from "../../src/file-loader";
+import {Utilities} from "../../src/utilities/Utilities";
+import {Entity} from "../../src/entity/Entity";
+import {ManyToManyTable} from "../../src/table/ManyToManyTable";
 
 const fs = require('fs')
 const path = require('path')
@@ -19,6 +22,18 @@ const testData = {
 }
 
 describe("Segment", () => {
+    describe("Basic methods", () => {
+        let schema = Schema.deserialize(testData.complexSchema)
+        test("getModels return only model entities", () => {
+            expect(schema.getModels().length).toBe(3)
+            schema.getModels().forEach(model => expect(model).toBeInstanceOf(Model))
+        })
+
+        test("getTables return only table entities", () => {
+            expect(schema.getTables().length).toBe(2)
+            schema.getTables().forEach(table => expect(table).toBeInstanceOf(Table))
+        })
+    })
     describe("Schema deserialization", () => {
         it("can deserialize a basic Schema", () => {
             let schema: Schema = Schema.deserialize(testData.basicSchema)
